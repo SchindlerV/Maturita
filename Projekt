@@ -1,0 +1,211 @@
+using System;
+using System.Collections.Generic;
+
+namespace schindler_v
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Watchlist watchlist = new Watchlist();
+            for (; ; )
+            {
+                Console.Clear();             
+                Console.WriteLine("Watchlist:\n1 = Zobrazit seznam\n2 = Přidat do seznamu\n3 = Odebrat ze seznamu\n4 = Upravit seriál v seznamu\n5 = Ukončit program");
+                int volba = Int32.Parse(Console.ReadLine());
+                if (volba == 1) watchlist.VypisSeznam();
+                else if (volba == 2) watchlist.PridatSerial();
+                else if (volba == 3) watchlist.SmazatSerial();
+                else if (volba == 4) watchlist.UpravitSerial();
+                else if (volba == 5) break;
+                else
+                {
+                    Console.Clear();
+                    Console.WriteLine("Chyba při výběru z menu.");
+                    Console.ReadKey();
+                }
+            }
+        }
+    }
+    class Serial
+    {
+        public string Nazev { set; get; }
+        public int Dily { set; get; }
+        public double Hodnoceni { set; get; }
+        
+        public Serial(string nazev, int dily, double hodnoceni)
+        {
+            Nazev = nazev;
+            Dily = dily;
+            Hodnoceni = hodnoceni;
+        }
+        public void VypisSerial()
+        {
+            Console.WriteLine("___________________________________");
+            Console.WriteLine("Název: {0}", Nazev);
+            Console.WriteLine("Počet dílů: {0}", Dily);
+            Console.WriteLine("Hodnocení: {0}*", Hodnoceni);
+        }
+        public void VypisNazvy()
+        {
+            Console.WriteLine("Název : {0}", Nazev);
+        }
+    }
+    class Watchlist
+    {
+        private List<Serial> listserialu;
+
+        public Watchlist()
+        {
+            listserialu = new List<Serial>();
+        }
+        public void PridatSerial()
+        {
+            Console.Clear();
+            Console.Write("Přidání nového seriálu:\nNázev: ");
+            string nazev = Console.ReadLine();
+            int dily = 0;
+            double hodnoceni = 0;
+            bool zadanoSpravne = false;
+            Console.Clear();
+            while (zadanoSpravne == false)
+            {
+                Console.Write("Počet dílů: ");
+                try
+                {
+                    dily = Int32.Parse(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Odchycena výjimka: ");
+                    Console.WriteLine(e.Message);
+                    Console.ReadKey();
+                }
+                Console.Clear();
+                Console.Write("Hodnocení: ");
+                try
+                {
+                    hodnoceni = Double.Parse(Console.ReadLine());
+                }
+                catch (Exception e)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Odchycena výjimka: ");
+                    Console.WriteLine(e.Message);
+                    Console.ReadKey();
+                }
+                if (dily == 0 || hodnoceni == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Pokuste se zadat seriál znovu.");
+                    Console.ReadKey();
+                    Console.Clear();
+                }
+                else zadanoSpravne = true;
+            }
+            Console.Clear();
+            Console.Write("Seriál úspěšně přidán!");
+            Console.ReadKey();
+            Serial jedenserial = new Serial(nazev, dily, hodnoceni);
+            listserialu.Add(jedenserial);
+        }
+            public void VypisSeznam()
+            {
+                Console.Clear();
+                if (listserialu.Count == 0)
+                {
+                    Console.WriteLine("V seznamu se nenachází žádný seriál.");
+                }
+                else
+                {
+                    Console.WriteLine("V seznamu se nachází {0} seriál(y/ů).", listserialu.Count);
+                    foreach (Serial jedenserial in listserialu)
+                    {
+                         jedenserial.VypisSerial();
+                    }
+                }
+                Console.ReadKey();
+            }
+        public void SmazatSerial()
+        {
+            Console.Clear();
+            Console.WriteLine("Který seriál by jste si přáli smazat?");
+            int poradi = 0;
+            foreach (Serial jedenserial in listserialu)
+            {
+                poradi = poradi + 1;
+                Console.Write("\n{0}. ", poradi);
+                jedenserial.VypisNazvy();
+            }
+            Console.WriteLine("\nZadejte {0} pro vrácení zpět do menu.", listserialu.Count + 1);
+            int volbasmazat = Int32.Parse(Console.ReadLine()) - 1;
+            if (volbasmazat == listserialu.Count)
+            {
+                Console.Clear();
+                Console.WriteLine("Návrat do menu");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.Clear();
+                Console.WriteLine("Seriál {0} byl smazán.", listserialu[volbasmazat].Nazev);
+                listserialu.RemoveAt(volbasmazat);
+                Console.ReadKey();
+            }
+            
+        }
+        public void UpravitSerial()
+        {
+            Console.Clear();
+            Console.WriteLine("Který seriál by jste si přáli upravit?");
+            int poradi = 0;
+            foreach (Serial jedenserial in listserialu)
+            {
+                poradi = poradi + 1;
+                Console.Write("\n{0}. ", poradi);
+                jedenserial.VypisNazvy();
+            }
+            Console.WriteLine("\nZadejte {0} pro vrácení zpět do menu.", listserialu.Count + 1);
+            int volbaupravit = Int32.Parse(Console.ReadLine()) - 1;
+            if (volbaupravit == listserialu.Count)
+            {
+                Console.Clear();
+                Console.WriteLine("Návrat do menu");
+                Console.ReadKey();
+            }
+            else
+            {
+                Console.Clear();
+                Console.Write("Byl zvolen seriál {0}. Zadejte jaký údaj by jste chtěli upravit\n1. Název\n2. Počet dílů \n3. Hodnocení\nZadejte 4 pro vrácení zpět do menu.", listserialu[volbaupravit].Nazev);
+                int volbaupravit2 = Int32.Parse(Console.ReadLine()) - 1;
+                if (volbaupravit2 == 3)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Návrat do menu");
+                    Console.ReadKey();
+                }
+                else if (volbaupravit2 == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Zvolte nový název.");
+                    listserialu[volbaupravit].Nazev = Console.ReadLine();
+                }
+                else if (volbaupravit2 == 1)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Zvolte nový počet dílů.");
+                    listserialu[volbaupravit].Dily = Int32.Parse(Console.ReadLine());
+                }
+                else if (volbaupravit2 == 2)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Zvolte nové hodnocení.");
+                    listserialu[volbaupravit].Hodnoceni = Double.Parse(Console.ReadLine());
+                }
+                
+            }
+        }
+
+    }
+}
